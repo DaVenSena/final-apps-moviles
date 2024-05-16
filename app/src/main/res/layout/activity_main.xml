@@ -11,6 +11,7 @@
     tools:context=".AuthActivity">
 
     <TextView
+        android:id="@+id/txtAuthTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
@@ -33,6 +34,18 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="20dp">
+
+        <EditText
+            android:id="@+id/edtName"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/transparent"
+            android:drawablePadding="10dp"
+            android:hint="Name"
+            android:inputType="textPassword"
+            android:padding="10dp" />
 
         <EditText
             android:id="@+id/email"
@@ -68,7 +81,7 @@
             android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/tv_signup"
+            android:id="@+id/txt_signup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
