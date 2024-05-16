@@ -2,7 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/itm"
-        android:title="Generic item" />
+        android:id="@+id/itm_notes"
+        android:title="Notes" />
 
+    <item
+        android:id="@+id/itm_list"
+        android:title="List"/>
 </menu>
