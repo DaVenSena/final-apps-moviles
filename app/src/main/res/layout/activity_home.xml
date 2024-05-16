@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    tools:context=".HomeActivity"
+    android:orientation="vertical">
 
 
     <FrameLayout
@@ -15,10 +16,10 @@
         android:layout_weight="1" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/btmNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btmNav"
-        app:menu="@menu/bottom_navigator"
-        android:elevation="10dp" />
+        android:elevation="10dp"
+        app:menu="@menu/bottom_navigator" />
 
 </LinearLayout>
