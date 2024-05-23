@@ -1,21 +1,21 @@
 package com.mobile.apps.proyectofinalappsmoviles;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.mobile.apps.proyectofinalappsmoviles.Classes.ListObject;
+import com.mobile.apps.proyectofinalappsmoviles.Classes.Note;
 import com.mobile.apps.proyectofinalappsmoviles.Fragments.ListFragment;
 import com.mobile.apps.proyectofinalappsmoviles.Fragments.NotesFragment;
+
+import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -23,13 +23,20 @@ public class HomeActivity extends AppCompatActivity {
     BottomNavigationView btmNav;
     NotesFragment notesFragment = new NotesFragment();
     ListFragment listFragment = new ListFragment();
+    ArrayList<ListObject> list;
+    ArrayList<Note> notes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
+        list = getIntent().getParcelableArrayListExtra("list");
+        Log.d("LIST", "List Home: " + list);
         loadFragment(notesFragment);
+
+        notes = getIntent().getParcelableArrayListExtra("notes");
+        Log.d("NOTES", "Notes Home: " + notes);
 
         frmHome = findViewById(R.id.frmHome);
         btmNav = findViewById(R.id.btmNav);
@@ -43,11 +50,6 @@ public class HomeActivity extends AppCompatActivity {
                 loadFragment(listFragment);
                 return true;
             }
-            /*final int noteId = R.id.itm_notes;
-            switch (menuItem.getItemId()){
-                case noteId:
-
-            }*/
             return false;
         });
 

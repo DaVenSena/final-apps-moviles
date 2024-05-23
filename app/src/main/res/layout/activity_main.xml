@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="Log In"
+        android:text="@string/log_in"
         android:layout_marginTop="200dp"
         android:textSize="30sp"
         android:textColor="#C5C6C7"
@@ -43,28 +43,28 @@
             android:layout_marginTop="20dp"
             android:background="@android:color/transparent"
             android:drawablePadding="10dp"
-            android:hint="Name"
+            android:hint="@string/name"
             android:inputType="textPassword"
             android:padding="10dp" />
 
         <EditText
-            android:id="@+id/email"
+            android:id="@+id/edt_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@android:color/transparent"
             android:drawablePadding="10dp"
-            android:hint="Email"
+            android:hint="@string/email"
             android:padding="10dp" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/edt_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:background="@android:color/transparent"
             android:drawablePadding="10dp"
-            android:hint="Password"
+            android:hint="@string/password"
             android:inputType="textPassword"
             android:padding="10dp" />
 
@@ -77,7 +77,7 @@
             android:backgroundTint="#879A77"
             android:elevation="5dp"
             android:padding="10dp"
-            android:text="Log In"
+            android:text="@string/log_in"
             android:textColor="@color/black" />
 
         <TextView
@@ -87,7 +87,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="Don't have an account?"
+            android:text="@string/don_t_have_an_account"
             android:textAlignment="center"
             android:textColor="#000000"/>
     </LinearLayout>
