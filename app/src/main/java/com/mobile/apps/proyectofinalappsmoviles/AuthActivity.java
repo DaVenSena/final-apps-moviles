@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.FirebaseApp;
@@ -30,6 +31,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AuthActivity extends AppCompatActivity {
@@ -110,9 +112,42 @@ public class AuthActivity extends AppCompatActivity {
         return listRequest;
     }
 
+    public void singUp() {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("name", edtName.getText().toString());
+        params.put("email", edtEmail.getText().toString());
+        params.put("pass", edtPass.getText().toString());
+        String url = Constants.BASE_URL + "users/signUp";
+        JsonObjectRequest signUpRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params), response -> {
+            Log.d("POST", "Sign Up response: " + response);
+            try {
+                JSONObject jsonObject = new JSONObject(String.valueOf(response));
+                JSONObject userJson = jsonObject.getJSONObject("user");
+                String uid = userJson.getString("uid");
+                Log.d("POST", "Uid: " + uid);
+                Request listRequest = getList(uid);
+                Request notesRequest = getNotes(uid);
+                requestQueue.add(listRequest);
+                requestQueue.add(notesRequest);
+                Toast.makeText(this, "Sign Up", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(this, HomeActivity.class);
+                i.putExtra("uid", uid);
+                startActivity(i);
+                finish();
+            } catch (JSONException e) {
+                Toast.makeText(this, "ERROR Sign Up: " + e.toString(), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        }, error -> {
+            Toast.makeText(this, "Error al llamar a la API " + error.toString(), Toast.LENGTH_SHORT).show();
+        });
+        requestQueue.add(signUpRequest);
+    }
+
     public void login() {
         if (signUp) {
             Toast.makeText(this, "Sign Up", Toast.LENGTH_SHORT).show();
+            singUp();
         } else {
             try {
             mAuth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtPass.getText().toString())
