@@ -126,12 +126,11 @@ public class AuthActivity extends AppCompatActivity {
                 String uid = userJson.getString("uid");
                 Log.d("POST", "Uid: " + uid);
                 Request listRequest = getList(uid);
-                Request notesRequest = getNotes(uid);
                 requestQueue.add(listRequest);
-                requestQueue.add(notesRequest);
                 Toast.makeText(this, "Sign Up", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(this, HomeActivity.class);
                 i.putExtra("uid", uid);
+                i.putExtra("list", list);
                 startActivity(i);
                 finish();
             } catch (JSONException e) {
@@ -163,6 +162,7 @@ public class AuthActivity extends AppCompatActivity {
                             Toast.makeText(this, "Logged In", Toast.LENGTH_SHORT).show();
                             i.putParcelableArrayListExtra("list", list);
                             i.putParcelableArrayListExtra("notes", notes);
+                            i.putExtra("uid", uid);
                             startActivity(i);
                             finish();
                         } else {
