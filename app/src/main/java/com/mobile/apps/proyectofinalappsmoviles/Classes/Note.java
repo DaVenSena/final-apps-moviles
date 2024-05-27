@@ -1,31 +1,92 @@
 package com.mobile.apps.proyectofinalappsmoviles.Classes;
 
-import com.fasterxml.jackson.annotation.*;
-import java.time.OffsetDateTime;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Note {
+import androidx.annotation.NonNull;
+
+import com.fasterxml.jackson.annotation.*;
+
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.util.Date;
+import java.util.logging.SimpleFormatter;
+
+public class Note implements Parcelable {
     private String id;
     private String title;
     private String desc;
-    private OffsetDateTime createdAt;
+    private Date createdAt;
 
-    @JsonProperty("id")
-    public String getID() { return id; }
-    @JsonProperty("id")
-    public void setID(String value) { this.id = value; }
+    public Note(String id, String title, String desc, String createdAt) throws ParseException {
+        this.id = id;
+        this.title = title;
+        this.desc = desc;
+        this.createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createdAt);
+    }
 
-    @JsonProperty("title")
-    public String getTitle() { return title; }
-    @JsonProperty("title")
-    public void setTitle(String value) { this.title = value; }
+    protected Note(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        desc = in.readString();
+        createdAt = new Date(in.readLong());
+    }
 
-    @JsonProperty("desc")
-    public String getDesc() { return desc; }
-    @JsonProperty("desc")
-    public void setDesc(String value) { this.desc = value; }
+    public static final Creator<Note> CREATOR = new Creator<Note>() {
+        @Override
+        public Note createFromParcel(Parcel in) {
+            return new Note(in);
+        }
 
-    @JsonProperty("createdAt")
-    public OffsetDateTime getCreatedAt() { return createdAt; }
-    @JsonProperty("createdAt")
-    public void setCreatedAt(OffsetDateTime value) { this.createdAt = value; }
+        @Override
+        public Note[] newArray(int size) {
+            return new Note[size];
+        }
+    };
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) throws ParseException {
+        this.createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createdAt);;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(desc);
+    }
 }
