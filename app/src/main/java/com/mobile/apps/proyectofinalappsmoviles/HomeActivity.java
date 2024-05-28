@@ -8,6 +8,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mobile.apps.proyectofinalappsmoviles.Classes.ListObject;
@@ -25,12 +26,18 @@ public class HomeActivity extends AppCompatActivity {
     ListFragment listFragment = new ListFragment();
     ArrayList<ListObject> list;
     ArrayList<Note> notes;
+    RecyclerView rcv_list;
+    RecyclerView rcv_notes;
+    String uid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
+        uid = getIntent().getStringExtra("uid");
+        Log.d("UID", "Uid Home: " + uid);
         list = getIntent().getParcelableArrayListExtra("list");
         Log.d("LIST", "List Home: " + list);
         loadFragment(notesFragment);
@@ -40,6 +47,8 @@ public class HomeActivity extends AppCompatActivity {
 
         frmHome = findViewById(R.id.frmHome);
         btmNav = findViewById(R.id.btmNav);
+        rcv_list = findViewById(R.id.rcv_list);
+        rcv_notes = findViewById(R.id.rcv_notes);
 
         btmNav.setOnItemSelectedListener(menuItem -> {
            if (menuItem.getItemId() == R.id.itm_notes){

@@ -46,6 +46,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:21.0.1")
     // Dependencias de Volley
     implementation("com.android.volley:volley:1.2.1")
+    // Dependencias de Picasso
+    implementation("com.squareup.picasso:picasso:2.71828")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
