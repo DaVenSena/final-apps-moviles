@@ -11,4 +11,21 @@
     <string name="mi_lista">Mi Lista</string>
     <string name="list">List</string>
     <string name="notes">Notes</string>
+    <string name="titulo">Titulo</string>
+    <string name="fecha">Fecha</string>
+    <string name="agregar_nota">Agregar Nota</string>
+    <string name="descripcion">Descripcion</string>
+    <string name="agregar">Agregar</string>
+    <string name="agregar_lista">Agregar Lista</string>
+    <string name="agregar_item">Agregar Item</string>
+    <string name="imagen">Imagen</string>
+    <string name="quantity">Quantity</string>
+    <string name="image">Image</string>
+    <string name="add_item">Add Item</string>
+    <string name="title">Title</string>
+    <string name="add">Add</string>
+    <string name="add_note">Add Note</string>
+    <string name="description">Description</string>
+    <string name="my_list">My List</string>
+    <string name="my_notes">My Notes</string>
 </resources>

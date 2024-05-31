@@ -13,7 +13,8 @@
         android:layout_height="55dp"
         android:layout_marginTop="65dp"
         android:layout_marginStart="40dp"
-        android:text="@string/mis_notas"
+        android:text="@string/my_notes"
+        android:fontFamily="@font/NunitoBold"
         android:textSize="45sp"
         android:textColor="#C5C6C7"/>
 
@@ -24,5 +25,11 @@
         android:layout_marginStart="300dp"
         android:src="@drawable/add"
         android:id="@+id/add_notes"/>
+
+    <view class="androidx.appcompat.app.AlertController$RecycleListView"
+        android:id="@+id/rcv_notes"
+        android:layout_marginTop="140dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
