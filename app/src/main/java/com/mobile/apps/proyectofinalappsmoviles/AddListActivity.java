@@ -47,7 +47,7 @@ import okhttp3.Response;
 
 public class AddListActivity extends AppCompatActivity {
 
-    private static final int REQUEST_PERMISSIONS = 100;
+    private static final int REQUEST_PERMISSIONS = 1;
     final String tag = "AddListActivity";
     EditText edtListTitle, edtListQuantity;
     ImageView imgAddItem;
@@ -143,9 +143,9 @@ public class AddListActivity extends AppCompatActivity {
                 Log.d(tag, "Image URL: " + publicURL);
                 object.setId(id);
                 object.setImageURL(publicURL);
-                Intent intent = new Intent(AddListActivity.this, HomeActivity.class);
-                intent.putExtra("listObject", object);
-                startActivity(intent);
+                Intent intent = new Intent();
+                intent.putExtra("result", object);
+                setResult(RESULT_OK, intent);
                 finish();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -166,15 +166,13 @@ public class AddListActivity extends AppCompatActivity {
 
     private boolean checkPermissions() {
         int permissionStateRead = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        int permissionStateWrite = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        Log.d("PERMISSIONS", "checkPermissions: permissionStateRead: " + permissionStateRead + ", permissionStateWrite: " + permissionStateWrite);
-        return permissionStateRead == PackageManager.PERMISSION_GRANTED && permissionStateWrite == PackageManager.PERMISSION_GRANTED;
+        Log.d("PERMISSIONS", "checkPermissions: permissionStateRead: " + permissionStateRead);
+        return permissionStateRead == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.READ_EXTERNAL_STORAGE
         }, REQUEST_PERMISSIONS);
     }
 

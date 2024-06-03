@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,16 +22,23 @@ public class Note implements Parcelable {
             return new Note[size];
         }
     };
-    private String id;
+    private @Nullable String id;
     private String title;
     private String desc;
     private Date createdAt;
 
-    public Note(String id, String title, String desc, String createdAt) throws ParseException {
+    public Note(@Nullable String id, String title, String desc, String createdAt) throws ParseException {
         this.id = id;
         this.title = title;
         this.desc = desc;
         this.createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createdAt);
+    }
+
+    public Note(@Nullable String id, String title, String desc, Date createdAt) throws ParseException {
+        this.id = id;
+        this.title = title;
+        this.desc = desc;
+        this.createdAt = createdAt;
     }
 
     protected Note(Parcel in) {
@@ -41,10 +49,10 @@ public class Note implements Parcelable {
     }
 
     public String getId() {
-        return id;
+        return id != null ? id : "";
     }
 
-    public void setId(String id) {
+    public void setId(@Nullable String id) {
         this.id = id;
     }
 
@@ -73,6 +81,10 @@ public class Note implements Parcelable {
         ;
     }
 
+    public void setCreatedAt(Date createdAt) throws ParseException {
+        this.createdAt = createdAt;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -94,5 +106,6 @@ public class Note implements Parcelable {
         dest.writeString(id);
         dest.writeString(title);
         dest.writeString(desc);
+        dest.writeLong(createdAt.getTime());
     }
 }

@@ -17,9 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mobile.apps.proyectofinalappsmoviles.Adapters.NoteAdapter;
-import com.mobile.apps.proyectofinalappsmoviles.Adapters.NoteAdapter;
 import com.mobile.apps.proyectofinalappsmoviles.AddNoteActivity;
-import com.mobile.apps.proyectofinalappsmoviles.Classes.Note;
 import com.mobile.apps.proyectofinalappsmoviles.Classes.Note;
 import com.mobile.apps.proyectofinalappsmoviles.R;
 
@@ -29,12 +27,14 @@ public class NotesFragment extends Fragment {
     private static final String ARG_MY_OBJECT = "notes";
     RecyclerView rcv_notes;
     ImageView img_addNote;
+    String uid;
     ArrayList<Note> notes;
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
-    public static NotesFragment newInstance(ArrayList<Note> notes) {
+    public static NotesFragment newInstance(ArrayList<Note> notes, String uid) {
         NotesFragment fragment = new NotesFragment();
         Bundle args = new Bundle();
+        args.putString("uid", uid);
         args.putParcelableArrayList(ARG_MY_OBJECT, notes);
         fragment.setArguments(args);
         return fragment;
@@ -43,9 +43,9 @@ public class NotesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
         rcv_notes = view.findViewById(R.id.rcv_notes);
+        uid = getArguments().getString("uid");
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -54,7 +54,7 @@ public class NotesFragment extends Fragment {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent data = result.getData();
                             if (data != null) {
-                                Note item = (Note) data.getSerializableExtra("result");
+                                Note item = data.getParcelableExtra("result");
                                 NoteAdapter adapter = (NoteAdapter) rcv_notes.getAdapter();
                                 adapter.addNote(item);
                             }
@@ -74,6 +74,7 @@ public class NotesFragment extends Fragment {
 
     public void goToAddNoteActivity(View view) {
         Intent intent = new Intent(view.getContext(), AddNoteActivity.class);
+        intent.putExtra("uid", uid);
         activityResultLauncher.launch(intent);
     }
 }

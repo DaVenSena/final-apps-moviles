@@ -36,7 +36,6 @@
             android:hint="@string/title"
             android:textAlignment="center"
             android:padding="10dp"
-            android:textColor="#C5C6C7"
             android:textSize="18sp"/>
 
         <EditText
@@ -48,7 +47,6 @@
             android:hint="@string/description"
             android:textAlignment="center"
             android:padding="10dp"
-            android:textColor="#C5C6C7"
             android:textSize="18sp"/>
 
 

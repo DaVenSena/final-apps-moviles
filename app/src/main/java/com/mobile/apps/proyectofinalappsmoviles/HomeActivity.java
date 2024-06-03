@@ -53,11 +53,13 @@ public class HomeActivity extends AppCompatActivity {
 
         final @Nullable ListObject lo = getIntent().getParcelableExtra("listObject");
         if (lo != null) list.add(lo);
+        final @Nullable Note note = getIntent().getParcelableExtra("note");
+        if (lo != null) notes.add(note);
 
         listFragment = ListFragment.newInstance(list, uid);
         getSupportFragmentManager().beginTransaction().replace(R.id.frmHome, listFragment).commit();
 
-        notesFragment = NotesFragment.newInstance(notes);
+        notesFragment = NotesFragment.newInstance(notes, uid);
         getSupportFragmentManager().beginTransaction().replace(R.id.frmHome, notesFragment).commit();
 
         loadFragment(notesFragment);
