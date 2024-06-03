@@ -1,6 +1,7 @@
 package com.mobile.apps.proyectofinalappsmoviles;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +31,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -43,8 +43,11 @@ public class AuthActivity extends AppCompatActivity {
     ArrayList<Note> notes = new ArrayList<>();
     RequestQueue requestQueue;
     boolean signUp = false;
-    Intent intent;
     private FirebaseAuth mAuth;
+
+    Intent intent;
+    SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,11 +146,7 @@ public class AuthActivity extends AppCompatActivity {
                 JSONArray jsonArray = jsonObject.getJSONArray("notes");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject noteJson = jsonArray.getJSONObject(i);
-                    Note note = new Note(noteJson.getString("id"),
-                            noteJson.getString("title"),
-                            noteJson.getString("desc"),
-                            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").
-                                    parse(noteJson.getString("createdAt")));
+                    Note note = new Note(noteJson.getString("id"), noteJson.getString("title"), noteJson.getString("desc"), noteJson.getString("createdAt"));
                     notes.add(note);
                 }
                 Log.d("GET", "Notes: " + notes);
@@ -197,15 +196,19 @@ public class AuthActivity extends AppCompatActivity {
             singUp();
         } else {
             try {
-                mAuth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtPass.getText().toString()).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        String uid = task.getResult().getUser().getUid();
-                        Log.d("LOGIN", "Uid: " + uid);
-                        processRequestsSequentially(uid);
-                    } else {
-                        Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                mAuth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtPass.getText().toString())
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                String uid = task.getResult().getUser().getUid();
+                                Log.d("LOGIN", "Uid: " + uid);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("uid", uid);
+                                editor.apply();
+                                processRequestsSequentially(uid);
+                            } else {
+                                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             } catch (Exception e) {
                 Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
             }
