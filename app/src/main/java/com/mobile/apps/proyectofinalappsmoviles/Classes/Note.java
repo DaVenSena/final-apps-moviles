@@ -5,16 +5,22 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.*;
-
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
 import java.util.Date;
-import java.util.logging.SimpleFormatter;
 
 public class Note implements Parcelable {
+    public static final Creator<Note> CREATOR = new Creator<Note>() {
+        @Override
+        public Note createFromParcel(Parcel in) {
+            return new Note(in);
+        }
+
+        @Override
+        public Note[] newArray(int size) {
+            return new Note[size];
+        }
+    };
     private String id;
     private String title;
     private String desc;
@@ -33,18 +39,6 @@ public class Note implements Parcelable {
         desc = in.readString();
         createdAt = new Date(in.readLong());
     }
-
-    public static final Creator<Note> CREATOR = new Creator<Note>() {
-        @Override
-        public Note createFromParcel(Parcel in) {
-            return new Note(in);
-        }
-
-        @Override
-        public Note[] newArray(int size) {
-            return new Note[size];
-        }
-    };
 
     public String getId() {
         return id;
@@ -75,7 +69,19 @@ public class Note implements Parcelable {
     }
 
     public void setCreatedAt(String createdAt) throws ParseException {
-        this.createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createdAt);;
+        this.createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createdAt);
+        ;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Note{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", desc='" + desc + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 
     @Override

@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:allowBackup="true"
@@ -15,10 +18,10 @@
         android:theme="@style/Theme.ProyectoFinalAppsMoviles"
         tools:targetApi="31">
         <activity
-            android:name=".AddList"
+            android:name=".AddListActivity"
             android:exported="false" />
         <activity
-            android:name=".AddNote"
+            android:name=".AddNoteActivity"
             android:exported="false" />
         <activity
             android:name=".HomeActivity"

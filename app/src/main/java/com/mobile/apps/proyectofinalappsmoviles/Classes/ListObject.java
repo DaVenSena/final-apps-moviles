@@ -11,6 +11,14 @@ public class ListObject implements Parcelable {
     private long quantity;
     private String imageURL;
     private String name;
+    private String id;
+
+    public ListObject(String id, long quantity, String imageURL, String name) {
+        this.id = id;
+        this.quantity = quantity;
+        this.imageURL = imageURL;
+        this.name = name;
+    }
 
     public ListObject(long quantity, String imageURL, String name) {
         this.quantity = quantity;
@@ -58,6 +66,14 @@ public class ListObject implements Parcelable {
 
     public void setName(String value) {
         this.name = value;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
