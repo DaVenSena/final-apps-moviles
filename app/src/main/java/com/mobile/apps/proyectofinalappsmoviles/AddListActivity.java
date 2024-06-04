@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -80,6 +81,7 @@ public class AddListActivity extends AppCompatActivity {
                         Uri imageUri = result.getData().getData();
                         Log.d("IMG", "Se ha seleccionado la imagen: " + imageUri);
                         imagePath = getRealPathFromURI(imageUri);
+                        Log.d("IMG", "imagePath: " + imagePath);
                         imgAddItem.setImageURI(imageUri);
                     }
                 }
@@ -104,11 +106,22 @@ public class AddListActivity extends AppCompatActivity {
             ListObject object = new ListObject(Long.parseLong(edtListQuantity.getText().toString()), imagePath, edtListTitle.getText().toString());
             File file = new File(object.getImageURL());
 
-            RequestBody fileBody = RequestBody.create(file, MediaType.parse("image/*"));
+            // Obtener el nombre del archivo con la extensión
+            String filePath = file.getPath();
+            String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+
+            // Extraer la extensión del archivo
+            String extension = "";
+            int i = fileName.lastIndexOf('.');
+            if (i > 0) {
+                extension = fileName.substring(i + 1);
+            }
+
+            RequestBody fileBody = RequestBody.create(file, MediaType.parse("image/" + extension));
             RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("name", object.getName())
                     .addFormDataPart("quantity", object.getQuantity() + "")
-                    .addFormDataPart("image", file.getName(), fileBody)
+                    .addFormDataPart("img", fileName, fileBody)
                     .addFormDataPart("uid", uid)
                     .build();
 
@@ -131,6 +144,7 @@ public class AddListActivity extends AppCompatActivity {
         }
     }
 
+
     public void onResponse(Call call, Response response, ListObject object) throws IOException {
         if (response.isSuccessful()) {
             Log.d(tag, "File uploaded successfully");
@@ -138,7 +152,7 @@ public class AddListActivity extends AppCompatActivity {
                 assert response.body() != null;
                 JSONObject jsonObject = new JSONObject(response.body().string());
                 final String id = jsonObject.getString("listId");
-                final String publicURL = jsonObject.getString("imageURL");
+                final String publicURL = jsonObject.getString("imageUrl");
                 Log.d(tag, "List id: " + id);
                 Log.d(tag, "Image URL: " + publicURL);
                 object.setId(id);
@@ -165,14 +179,21 @@ public class AddListActivity extends AppCompatActivity {
     }
 
     private boolean checkPermissions() {
-        int permissionStateRead = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permissionStateRead = -1;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionStateRead = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES);
+        } else {
+            permissionStateRead = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+
         Log.d("PERMISSIONS", "checkPermissions: permissionStateRead: " + permissionStateRead);
         return permissionStateRead == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.READ_EXTERNAL_STORAGE
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? Manifest.permission.READ_MEDIA_IMAGES : Manifest.permission.READ_EXTERNAL_STORAGE
         }, REQUEST_PERMISSIONS);
     }
 

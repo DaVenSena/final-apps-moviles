@@ -3,6 +3,7 @@ package com.mobile.apps.proyectofinalappsmoviles.Fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,10 +56,14 @@ public class ListFragment extends Fragment {
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent data = result.getData();
+                            Log.d("ListFragment", "entro en onActivityResult: data: " + data);
                             if (data != null) {
-                                ListObject item = (ListObject) data.getSerializableExtra("result");
+                                ListObject item = (ListObject) data.getParcelableExtra("result");
+                                Log.d("ListFragment", "onActivityResult: item: " + item);
                                 ListAdapter adapter = (ListAdapter) rcv_list.getAdapter();
-                                adapter.addList(item);
+                                if (adapter != null) {
+                                    adapter.addList(item);
+                                }
                             }
                         }
                     }

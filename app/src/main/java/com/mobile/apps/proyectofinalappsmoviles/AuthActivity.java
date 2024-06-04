@@ -43,15 +43,19 @@ public class AuthActivity extends AppCompatActivity {
     ArrayList<Note> notes = new ArrayList<>();
     RequestQueue requestQueue;
     boolean signUp = false;
-    private FirebaseAuth mAuth;
-
     Intent intent;
     SharedPreferences sharedPreferences;
-
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestQueue = Volley.newRequestQueue(this);
+        sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
+        String uid = sharedPreferences.getString("uid", null);
+        if (uid != null)
+            processRequestsSequentially(uid);
+
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
         EdgeToEdge.enable(this);
@@ -63,7 +67,7 @@ public class AuthActivity extends AppCompatActivity {
             return insets;
         });
 
-        requestQueue = Volley.newRequestQueue(this);
+
         edtName = findViewById(R.id.edtName);
         edtEmail = findViewById(R.id.edt_email);
         edtPass = findViewById(R.id.edt_password);
