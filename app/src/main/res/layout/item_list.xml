@@ -34,7 +34,7 @@
                 android:layout_width="126dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:fontFamily="@font/NunitoBold"
+                android:fontFamily="@font/nunito_bold"
                 android:text="@string/titulo"
                 android:textAlignment="textStart"
                 android:textSize="15sp" />
@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:fontFamily="@font/NunitoBold"
+                android:fontFamily="@font/nunito_bold"
                 android:text="2"
                 android:textAlignment="textEnd"
                 android:textSize="15sp"/>

@@ -48,6 +48,10 @@ dependencies {
     implementation("com.android.volley:volley:1.2.1")
     // Dependencias de Picasso
     implementation("com.squareup.picasso:picasso:2.71828")
+    // Dependencia de ImagePicker
+    implementation("io.github.ParkSangGwon:tedimagepicker:1.2.8")
+    // Dependencia de OkHttp
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -1,6 +1,7 @@
 package com.mobile.apps.proyectofinalappsmoviles;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +33,6 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class AuthActivity extends AppCompatActivity {
 
@@ -42,24 +42,32 @@ public class AuthActivity extends AppCompatActivity {
     ArrayList<ListObject> list = new ArrayList<>();
     ArrayList<Note> notes = new ArrayList<>();
     RequestQueue requestQueue;
-
-    private FirebaseAuth mAuth;
     boolean signUp = false;
+    Intent intent;
+    SharedPreferences sharedPreferences;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestQueue = Volley.newRequestQueue(this);
+        sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
+        String uid = sharedPreferences.getString("uid", null);
+        if (uid != null)
+            processRequestsSequentially(uid);
+
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        intent = new Intent(this, HomeActivity.class);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        requestQueue = Volley.newRequestQueue(this);
+
         edtName = findViewById(R.id.edtName);
         edtEmail = findViewById(R.id.edt_email);
         edtPass = findViewById(R.id.edt_password);
@@ -86,7 +94,24 @@ public class AuthActivity extends AppCompatActivity {
         txtSignUp.setText(account);
     }
 
-    public Request getList(String uid) {
+    public void processRequestsSequentially(String uid) {
+        // Obtener la lista primero
+        Request listRequest = getList(uid, () -> {
+            // Después de obtener la lista, obtener las notas
+            Request notesRequest = getNotes(uid, () -> {
+                // Después de obtener las notas, iniciar la actividad
+                intent.putParcelableArrayListExtra("list", list);
+                intent.putParcelableArrayListExtra("notes", notes);
+                intent.putExtra("uid", uid);
+                startActivity(intent);
+                finish();
+            });
+            requestQueue.add(notesRequest);
+        });
+        requestQueue.add(listRequest);
+    }
+
+    public Request getList(String uid, Runnable onComplete) {
         String url = Constants.BASE_URL + "list/" + uid;
         StringRequest listRequest = new StringRequest(Request.Method.GET, url, response -> {
             Log.d("GET", "List response: " + response);
@@ -97,19 +122,51 @@ public class AuthActivity extends AppCompatActivity {
                     JSONObject listObjectJson = jsonArray.getJSONObject(i);
                     int quantity = listObjectJson.getInt("quantity");
                     String imageURL = listObjectJson.getString("imageUrl");
+                    String id = listObjectJson.getString("id");
                     String name = listObjectJson.getString("name");
-                    ListObject listObject = new ListObject(quantity, imageURL, name);
+                    ListObject listObject = new ListObject(id, quantity, imageURL, name);
                     list.add(listObject);
                 }
                 Log.d("GET", "List: " + list);
+                onComplete.run(); // Llamar al siguiente request
             } catch (JSONException e) {
-                Toast.makeText(this, "ERROR List: " + e.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "ERROR List: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
+                onComplete.run(); // Aún así llamar al siguiente request
             }
         }, error -> {
             Toast.makeText(this, "Error al llamar a la API " + error.toString(), Toast.LENGTH_SHORT).show();
+            onComplete.run(); // Aún así llamar al siguiente request
         });
         return listRequest;
+    }
+
+    public Request getNotes(String uid, Runnable onComplete) {
+        String url = Constants.BASE_URL + "notes/" + uid;
+        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
+            Log.d("GET", "Notes response: " + response);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                JSONArray jsonArray = jsonObject.getJSONArray("notes");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject noteJson = jsonArray.getJSONObject(i);
+                    Note note = new Note(noteJson.getString("id"), noteJson.getString("title"), noteJson.getString("desc"), noteJson.getString("createdAt"));
+                    notes.add(note);
+                }
+                Log.d("GET", "Notes: " + notes);
+                onComplete.run(); // Llamar al siguiente request
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "ERROR Notes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                onComplete.run(); // Aún así llamar al siguiente request
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }, error -> {
+            Toast.makeText(this, "Error al llamar a la API " + error.toString(), Toast.LENGTH_SHORT).show();
+            onComplete.run(); // Aún así llamar al siguiente request
+        });
+        return request;
     }
 
     public void singUp() {
@@ -125,16 +182,10 @@ public class AuthActivity extends AppCompatActivity {
                 JSONObject userJson = jsonObject.getJSONObject("user");
                 String uid = userJson.getString("uid");
                 Log.d("POST", "Uid: " + uid);
-                Request listRequest = getList(uid);
-                requestQueue.add(listRequest);
+                processRequestsSequentially(uid);
                 Toast.makeText(this, "Sign Up", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(this, HomeActivity.class);
-                i.putExtra("uid", uid);
-                i.putExtra("list", list);
-                startActivity(i);
-                finish();
             } catch (JSONException e) {
-                Toast.makeText(this, "ERROR Sign Up: " + e.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "ERROR Sign Up: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }, error -> {
@@ -149,54 +200,22 @@ public class AuthActivity extends AppCompatActivity {
             singUp();
         } else {
             try {
-            mAuth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtPass.getText().toString())
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Intent i = new Intent(this, HomeActivity.class);
-                            String uid = task.getResult().getUser().getUid();
-                            Log.d("LOGIN", "Uid: " + uid);
-                            Request listRequest = getList(uid);
-                            Request notesRequest = getNotes(uid);
-                            requestQueue.add(listRequest);
-                            requestQueue.add(notesRequest);
-                            Toast.makeText(this, "Logged In", Toast.LENGTH_SHORT).show();
-                            i.putParcelableArrayListExtra("list", list);
-                            i.putParcelableArrayListExtra("notes", notes);
-                            i.putExtra("uid", uid);
-                            startActivity(i);
-                            finish();
-                        } else {
-                            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-            }catch (Exception e){
+                mAuth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtPass.getText().toString())
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                String uid = task.getResult().getUser().getUid();
+                                Log.d("LOGIN", "Uid: " + uid);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("uid", uid);
+                                editor.apply();
+                                processRequestsSequentially(uid);
+                            } else {
+                                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } catch (Exception e) {
                 Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    public Request getNotes(String uid) {
-        String url = Constants.BASE_URL + "notes/" + uid;
-        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
-            Log.d("GET", "List response: " + response);
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                JSONArray jsonArray = jsonObject.getJSONArray("notes");
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject noteJson = jsonArray.getJSONObject(i);
-                    Note note = new Note(noteJson.getString("id"), noteJson.getString("title"), noteJson.getString("desc"), noteJson.getString("createdAt"));
-                    notes.add(note);
-                }
-                Log.d("GET", "Notes: " + notes);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Toast.makeText(this, "ERROR Notes: " + e.toString(), Toast.LENGTH_SHORT).show();
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-        }, error -> {
-            Toast.makeText(this, "Error al llamar a la API " + error.toString(), Toast.LENGTH_SHORT).show();
-        });
-        return request;
     }
 }

@@ -4,36 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.*;
-
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
 import java.util.Date;
-import java.util.logging.SimpleFormatter;
 
 public class Note implements Parcelable {
-    private String id;
-    private String title;
-    private String desc;
-    private Date createdAt;
-
-    public Note(String id, String title, String desc, String createdAt) throws ParseException {
-        this.id = id;
-        this.title = title;
-        this.desc = desc;
-        this.createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createdAt);
-    }
-
-    protected Note(Parcel in) {
-        id = in.readString();
-        title = in.readString();
-        desc = in.readString();
-        createdAt = new Date(in.readLong());
-    }
-
     public static final Creator<Note> CREATOR = new Creator<Note>() {
         @Override
         public Note createFromParcel(Parcel in) {
@@ -45,12 +22,37 @@ public class Note implements Parcelable {
             return new Note[size];
         }
     };
+    private @Nullable String id;
+    private String title;
+    private String desc;
+    private Date createdAt;
 
-    public String getId() {
-        return id;
+    public Note(@Nullable String id, String title, String desc, String createdAt) throws ParseException {
+        this.id = id;
+        this.title = title;
+        this.desc = desc;
+        this.createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createdAt);
     }
 
-    public void setId(String id) {
+    public Note(@Nullable String id, String title, String desc, Date createdAt) throws ParseException {
+        this.id = id;
+        this.title = title;
+        this.desc = desc;
+        this.createdAt = createdAt;
+    }
+
+    protected Note(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        desc = in.readString();
+        createdAt = new Date(in.readLong());
+    }
+
+    public String getId() {
+        return id != null ? id : "";
+    }
+
+    public void setId(@Nullable String id) {
         this.id = id;
     }
 
@@ -75,7 +77,23 @@ public class Note implements Parcelable {
     }
 
     public void setCreatedAt(String createdAt) throws ParseException {
-        this.createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createdAt);;
+        this.createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createdAt);
+        ;
+    }
+
+    public void setCreatedAt(Date createdAt) throws ParseException {
+        this.createdAt = createdAt;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Note{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", desc='" + desc + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 
     @Override
@@ -88,5 +106,6 @@ public class Note implements Parcelable {
         dest.writeString(id);
         dest.writeString(title);
         dest.writeString(desc);
+        dest.writeLong(createdAt.getTime());
     }
 }

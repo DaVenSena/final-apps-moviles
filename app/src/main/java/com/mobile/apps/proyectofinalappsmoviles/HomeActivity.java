@@ -2,13 +2,15 @@ package com.mobile.apps.proyectofinalappsmoviles;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mobile.apps.proyectofinalappsmoviles.Classes.ListObject;
@@ -22,12 +24,11 @@ public class HomeActivity extends AppCompatActivity {
 
     FrameLayout frmHome;
     BottomNavigationView btmNav;
-    NotesFragment notesFragment = new NotesFragment();
-    ListFragment listFragment = new ListFragment();
+    NotesFragment notesFragment;
+    ListFragment listFragment;
+    Button btnAddList, btnAddNote;
     ArrayList<ListObject> list;
     ArrayList<Note> notes;
-    RecyclerView rcv_list;
-    RecyclerView rcv_notes;
     String uid;
 
     @Override
@@ -36,26 +37,39 @@ public class HomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
-        uid = getIntent().getStringExtra("uid");
-        Log.d("UID", "Uid Home: " + uid);
-        list = getIntent().getParcelableArrayListExtra("list");
-        Log.d("LIST", "List Home: " + list);
-        loadFragment(notesFragment);
-
-        notes = getIntent().getParcelableArrayListExtra("notes");
-        Log.d("NOTES", "Notes Home: " + notes);
-
         frmHome = findViewById(R.id.frmHome);
         btmNav = findViewById(R.id.btmNav);
-        rcv_list = findViewById(R.id.rcv_list);
-        rcv_notes = findViewById(R.id.rcv_notes);
+
+        try {
+            uid = getIntent().getStringExtra("uid");
+            Log.d("UID", "Uid Home: " + uid);
+            notes = getIntent().getParcelableArrayListExtra("notes");
+            Log.d("NOTES", "Notes Home: " + notes);
+            list = getIntent().getParcelableArrayListExtra("list");
+            Log.d("LIST", "List Home: " + list);
+        } catch (Exception e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        final @Nullable ListObject lo = getIntent().getParcelableExtra("listObject");
+        if (lo != null) list.add(lo);
+        final @Nullable Note note = getIntent().getParcelableExtra("note");
+        if (lo != null) notes.add(note);
+
+        listFragment = ListFragment.newInstance(list, uid);
+        getSupportFragmentManager().beginTransaction().replace(R.id.frmHome, listFragment).commit();
+
+        notesFragment = NotesFragment.newInstance(notes, uid);
+        getSupportFragmentManager().beginTransaction().replace(R.id.frmHome, notesFragment).commit();
+
+        loadFragment(notesFragment);
 
         btmNav.setOnItemSelectedListener(menuItem -> {
-           if (menuItem.getItemId() == R.id.itm_notes){
+            if (menuItem.getItemId() == R.id.itm_notes) {
                 loadFragment(notesFragment);
                 return true;
             }
-            if (menuItem.getItemId() == R.id.itm_list){
+            if (menuItem.getItemId() == R.id.itm_list) {
                 loadFragment(listFragment);
                 return true;
             }
@@ -64,8 +78,9 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
-    public void loadFragment(Fragment fr){
-        FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction();
+
+    public void loadFragment(Fragment fr) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frmHome, fr);
         transaction.commit();
     }

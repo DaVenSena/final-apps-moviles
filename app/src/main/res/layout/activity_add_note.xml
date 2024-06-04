@@ -6,26 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".AddList"
+    tools:context=".AddListActivity"
     android:background="#3B4044">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:background="#2E2E2E">
 
-        <TextView
-            android:id="@+id/txt_noteTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:fontFamily="@font/NunitoBold"
-            android:text="@string/add_note"
-            android:textAlignment="center"
-            android:textColor="#C5C6C7"
-            android:textSize="45sp"/>
 
         <EditText
             android:id="@+id/edt_noteTitle"
@@ -36,19 +26,17 @@
             android:hint="@string/title"
             android:textAlignment="center"
             android:padding="10dp"
-            android:textColor="#C5C6C7"
             android:textSize="18sp"/>
 
         <EditText
             android:id="@+id/edt_noteDescription"
             android:layout_width="300dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="450dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/edit_text_background"
             android:hint="@string/description"
             android:textAlignment="center"
             android:padding="10dp"
-            android:textColor="#C5C6C7"
             android:textSize="18sp"/>
 
 
@@ -62,7 +50,7 @@
             android:elevation="5dp"
             android:padding="10dp"
             android:text="@string/add"
-            android:fontFamily="@font/NunitoBold"
+            android:fontFamily="@font/nunito_bold"
             android:textColor="@color/black" />
     </LinearLayout>
 

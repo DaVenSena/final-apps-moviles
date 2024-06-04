@@ -4,12 +4,12 @@
     <item
         android:id="@+id/itm_notes"
         android:title="@string/notes"
-        android:fontFamily="@font/NunitoBold"
+        android:fontFamily="@font/nunito_bold"
         android:icon="@drawable/note"/>
 
     <item
         android:id="@+id/itm_list"
         android:title="@string/list"
-        android:fontFamily="@font/NunitoBold"
+        android:fontFamily="@font/nunito_bold"
         android:icon="@drawable/list"/>
 </menu>

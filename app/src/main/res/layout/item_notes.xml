@@ -1,54 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="100dp"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_margin="20dp"
-app:cardElevation="20dp"
-app:cardCornerRadius="20dp"
-android:backgroundTint="#D9D9D9">
-
-
-<LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="150dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="20dp"
-    android:orientation="vertical">
+    app:cardElevation="20dp"
+    app:cardCornerRadius="20dp"
+    android:backgroundTint="#D9D9D9">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_margin="20dp"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txt_noteTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/NunitoBold"
-            android:text="@string/titulo"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/txt_noteDate"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="textEnd"
-            android:fontFamily="@font/NunitoRegular"
-            android:paddingRight="7dp"
-            android:text="@string/fecha"
-            android:textColor="#C5C6C7"
-            android:textSize="15sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_noteTitleShow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_bold"
+                android:text="@string/titulo"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txt_noteDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:fontFamily="@font/nunito_regular"
+                android:paddingRight="7dp"
+                android:text="@string/fecha"
+                android:textSize="15sp" />
+<!--                android:textColor="#C5C6C7"-->
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_noteDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Description"
+            android:textColor="@color/black"
+            android:fontFamily="@font/nunito_regular"
+            android:textSize="15sp"/>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/txt_noteDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Description"
-        android:fontFamily="@font/NunitoRegular"
-        android:textSize="15sp"/>
-
-</LinearLayout>
-
 </androidx.cardview.widget.CardView>
